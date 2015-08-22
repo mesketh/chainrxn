@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Built-By: mark
+Class-Path: file:///~/.m2/repository/commons-collections/commons-colle
+ ctions/3.2.1/commons-collections-3.2.1.jar file:///~/.m2/repository/c
+ ommons-io/commons-io/2.3/commons-io-2.3.jar file:///~/.m2/repository/
+ org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar file:///~/.m2/repositor
+ y/ch/qos/logback/logback-core/1.0.0/logback-core-1.0.0.jar file:///~/
+ .m2/repository/ch/qos/logback/logback-classic/1.0.0/logback-classic-1
+ .0.0.jar
+Created-By: Apache Maven 3.2.2
+Build-Jdk: 1.8.0_25
+url: 
+Main-Class: au.com.schmick.game.cxn.GameManager
+SplashScreen-Image: images/splash.png
+

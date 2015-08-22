@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="6.0">
+    <information>
+        <codebase>https://bitbucket.org/mesketh/chainrxn/downloads</codebase>
+        <title>Chain Reaction</title>
+        <vendor>Schmick Software</vendor>
+    </information>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+"
+              href="http://java.sun.com/products/autodl/j2se"/>
+        <jar href="https://bitbucket.org/mesketh/chainrxn/downloads/chainrxn-1.0-SNAPSHOT.jar" main="true" />
+    </resources>
+    <application-desc
+         name="Chain Reaction - derived from the popular Facebook game"
+         main-class="au.com.schmick.game.cxn.GameManager"
+         width="640"
+         height="480">
+     </application-desc>
+     <update check="background"/>
+</jnlp>

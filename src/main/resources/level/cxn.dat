@@ -1,0 +1,16 @@
+levels.max=5
+level1.max-balls=5
+level1.balls-to-pass=2
+level1.ball-score=10
+level2.max-balls=10
+level2.balls-to-pass=4
+level2.ball-score=20
+level3.max-balls=30
+level3.balls-to-pass=17
+level3.ball-score=70
+level4.max-balls=40
+level4.balls-to-pass=25
+level4.ball-score=80
+level5.max-balls=50
+level5.balls-to-pass=35
+level5.ball-score=1000
