@@ -195,7 +195,6 @@ public class GameManager implements Runnable, GameState {
         }
     }
 
-    @Override
     public boolean isLevelOver() {
 
         boolean levelDone = false;
@@ -460,17 +459,14 @@ public class GameManager implements Runnable, GameState {
         return intersection;
     }
 
-    @Override
     public boolean isPaused() {
         return this.isPaused;
     }
 
-    @Override
     public List<Reactor> getReactors() {
         return this.reactorList;
     }
 
-    @Override
     public List<Ball> getBalls() {
         return this.ballList;
     }
@@ -512,12 +508,10 @@ public class GameManager implements Runnable, GameState {
         this.isGameInProgress = false;
     }
 
-    @Override
     public int getCurrentScore() {
         return this.score;
     }
 
-    @Override
     public int getBallsLeft() {
         return LevelManager.getCurrentLevel().getMinBallsToPass()
                 - (LevelManager.getCurrentLevel().getMaxBalls() - this.ballList
@@ -544,7 +538,6 @@ public class GameManager implements Runnable, GameState {
         mgr.init();
     }
 
-    @Override
     public boolean isAdvancing() {
         boolean advancing = false;
 
@@ -558,7 +551,6 @@ public class GameManager implements Runnable, GameState {
         return advancing;
     }
 
-    @Override
     public boolean isGameFinished() {
         return LevelManager.isLastLevel() && LevelManager.isLevelPassed(this);
     }

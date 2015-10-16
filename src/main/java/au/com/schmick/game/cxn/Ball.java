@@ -138,7 +138,6 @@ public class Ball extends JComponent implements CollisionDetectable {
 
 	}
 
-	@Override
 	public boolean isCollidingWith(CollisionDetectable otherObj) {
 
 		Point2D otherCentre = otherObj.getCentre();
@@ -149,12 +148,10 @@ public class Ball extends JComponent implements CollisionDetectable {
 		return (distanceBetweenCentres < totalRadii);
 	}
 
-	@Override
 	public Point2D getCentre() {
 		return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
 	}
 
-	@Override
 	public int getRadius() {
 		return getWidth();
 	}

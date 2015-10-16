@@ -108,12 +108,10 @@ public class Reactor extends JComponent implements CollisionDetectable {
 		g.setColor(currColor);
 	}
 
-	@Override
 	public Point2D getCentre() {
 		return centre;
 	}
 
-	@Override
 	public boolean isCollidingWith(CollisionDetectable otherObj) {
 
 		Point2D otherCentre = otherObj.getCentre();
