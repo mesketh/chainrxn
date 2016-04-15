@@ -1,6 +1,5 @@
 Welcome to a java clone of the popular Facebook and oft-cloned game - Chain Reaction. Here known as ChainRxn ripped directly off from Mobile1up.com's version (attribution to Aaron Ardiri).
 
-
 Running
 -------
 
@@ -17,6 +16,11 @@ Prior to building ensure you have a repository directory to nominate or use an e
 Option 2 (simpler): 
 
 ```mvn clean package exec:exec```
+
+Known Bugs
+----------
+
+- At completion of levels cannot return to start screen(!) - could be incomplete feature
 
 Backlog
 -------
