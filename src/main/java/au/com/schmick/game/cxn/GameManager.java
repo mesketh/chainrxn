@@ -119,7 +119,7 @@ public class GameManager implements Runnable, GameState {
     private void initaliseEffects() {
         try {
             this.reactorEffectRawData = IOUtils.toByteArray(GameManager.class
-                    .getResourceAsStream("/sounds/" + REACTION_SOUND));
+                    .getResourceAsStream("sounds/" + REACTION_SOUND));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -556,6 +556,7 @@ public class GameManager implements Runnable, GameState {
     }
 
     public synchronized void playSound() {
+      if (reactorEffectRawData != null) {
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -571,6 +572,7 @@ public class GameManager implements Runnable, GameState {
                 }
             }
         }).start();
+      }
     }
 
     private void updateProgress(SplashScreenStages stage) {

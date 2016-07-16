@@ -1,1 +1,4 @@
 language: java
+addons:
+  artifacts: true
+    s3_region: "us-west-1"
