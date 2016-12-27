@@ -1,24 +1,13 @@
 package au.com.schmick.game.cxn;
 
-import java.awt.AlphaComposite;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.SplashScreen;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import org.apache.commons.io.IOUtils;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,17 +17,10 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import org.apache.commons.io.IOUtils;
-
 /**
  * @author mesketh
  */
+@SuppressWarnings("ALL")
 public class GameManager implements Runnable, GameState {
 
     private final static String REACTION_SOUND = "beep-02.wav";
@@ -46,12 +28,10 @@ public class GameManager implements Runnable, GameState {
     private byte[] reactorEffectRawData;
 
     private volatile boolean gameOver;
-    private volatile boolean isRunning;
     private volatile boolean isPaused;
     protected volatile boolean isReactorAdded;
     protected volatile boolean isBetweenLevels;
     protected volatile boolean isGameInProgress;
-    protected volatile boolean isOnFirstLevel = true;
 
     private volatile Object lock = new Object();
 
@@ -129,7 +109,7 @@ public class GameManager implements Runnable, GameState {
 
     public void run() {
 
-        this.isRunning = true;
+        boolean isRunning = true;
         do {
             if (!isBetweenLevels) {
 
@@ -148,7 +128,7 @@ public class GameManager implements Runnable, GameState {
                 changeScreen(GameScreen.INFO);
                 if (isGameFinished()) {
                     try {
-                        changeScreen(GameScreen.INFO);
+//                        changeScreen(GameScreen.INFO);
                         synchronized (this.lock) {
                             this.lock.wait();
                         }
@@ -257,10 +237,13 @@ public class GameManager implements Runnable, GameState {
     public void initialiseUI() {
 
         this.gameFrame = new JFrame(
-                String.format("Chain Rxn v1.0.0b - Copyright \u00a9 Schmick Software %s", Calendar.getInstance().get(Calendar.YEAR)));
+                String.format("Chain Rxn (%s) - Copyright \u00a9 Schmick Software %s", System.getProperty("chainrxn.version"), Calendar.getInstance().get(Calendar.YEAR)));
 
-        intialiseScreens(this.gameFrame.getContentPane());
+        initialiseScreens(this.gameFrame.getContentPane());
         // TODO: Log point for splash
+
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        this.gameFrame.setLocation((int) Math.round((screen.width - GameCanvas.PREFERRED_SIZE.getWidth()) / 2), (int) Math.round((screen.height - GameCanvas.PREFERRED_SIZE.getHeight()) / 2));
 
         gameFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
@@ -288,7 +271,7 @@ public class GameManager implements Runnable, GameState {
         changeScreen(GameScreen.GAME_LEVEL);
     }
 
-    private void intialiseScreens(Container parentContainer) {
+    private void initialiseScreens(Container parentContainer) {
         this.cardManager = new CardLayout(10, 10);
         parentContainer.setLayout(this.cardManager);
 
@@ -341,7 +324,6 @@ public class GameManager implements Runnable, GameState {
                         GameManager.this.isBetweenLevels = false;
                         GameManager.this.isReactorAdded = false;
                         GameManager.this.levelScore = 0;
-                        // TODO - should ask for confirmation here
                         synchronized (GameManager.this.lock) {
                             GameManager.this.lock.notify();
                         }
@@ -349,10 +331,10 @@ public class GameManager implements Runnable, GameState {
                 } else if (e.getKeyCode() == KeyEvent.VK_X) {
                     stopGame();
                     quitGame();
-                    prepareGame();
-                    synchronized (GameManager.this.lock) {
-                        GameManager.this.lock.notify();
-                    }
+                    GameManager.this.isBetweenLevels = false;
+
+                    GameManager.this.gameMessager.repaint();
+
                 } else if (e.getKeyCode() == KeyEvent.VK_S) {
                     if (!GameManager.this.isGameInProgress) {
                         prepareGame();
@@ -422,7 +404,7 @@ public class GameManager implements Runnable, GameState {
         return levelScore;
     }
 
-    private final void addReactor(int x, int y) {
+    private void addReactor(int x, int y) {
 
         if (this.reactorList == null) {
             this.reactorList = new ArrayList<Reactor>();
@@ -543,11 +525,7 @@ public class GameManager implements Runnable, GameState {
         boolean advancing = false;
 
         int ballsToAdvance = getBallsLeft();
-        if (ballsToAdvance > 0) {
-            advancing = false;
-        } else {
-            advancing = true;
-        }
+        advancing = ballsToAdvance <= 0;
 
         return advancing;
     }
@@ -557,23 +535,23 @@ public class GameManager implements Runnable, GameState {
     }
 
     public synchronized void playSound() {
-      if (reactorEffectRawData != null) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Clip clip = AudioSystem.getClip();
-                    AudioInputStream effectStream = AudioSystem
-                            .getAudioInputStream(new ByteArrayInputStream(
-                                    GameManager.this.reactorEffectRawData));
-                    clip.open(effectStream);
-                    clip.start();
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+        if (reactorEffectRawData != null) {
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Clip clip = AudioSystem.getClip();
+                        AudioInputStream effectStream = AudioSystem
+                                .getAudioInputStream(new ByteArrayInputStream(
+                                        GameManager.this.reactorEffectRawData));
+                        clip.open(effectStream);
+                        clip.start();
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }).start();
-      }
+            }).start();
+        }
     }
 
     private void updateProgress(SplashScreenStages stage) {
@@ -601,7 +579,7 @@ public class GameManager implements Runnable, GameState {
 @SuppressWarnings("serial")
 class GameMessager extends JPanel {
 
-    GameState gameState;
+    private final GameState gameState;
 
     GameMessager(GameState gameState) {
         this.gameState = gameState;
@@ -627,11 +605,11 @@ class GameMessager extends JPanel {
         // display the splash screen before game starts
         if (!this.gameState.isGameStarted()) {
             // TODO: Check
-            return String.format("Welcome - Press 's' to start");
+            return "Welcome - Press 's' to start";
         } else if (this.gameState.isAdvancing()) {
             if (!this.gameState.isGameFinished()) {
                 return String
-                        .format("Current Score: %d\n\n Press 'n' to proceed to next level",
+                        .format("Current Score: %d\n\nPress:\n\n\t'n'- Proceed to next level\n\t'x' - Exit current game",
                                 this.gameState.getCurrentScore());
             } else {
                 return String
@@ -639,12 +617,11 @@ class GameMessager extends JPanel {
                                 this.gameState.getCurrentScore());
             }
         } else {
-            return String
-                    .format("Failed to complete level - Press a to try again");
+            return "Failed to complete level - Press a to try again";
         }
     }
 
-    public void renderMessage(Graphics2D g) {
+    private void renderMessage(Graphics2D g) {
         Color currColor = g.getColor();
         g.setColor(Color.WHITE);
         g.drawString(getLevelMessage(), 50, 50);
