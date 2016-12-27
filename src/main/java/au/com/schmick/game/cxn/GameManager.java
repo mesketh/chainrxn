@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -119,7 +120,7 @@ public class GameManager implements Runnable, GameState {
     private void initaliseEffects() {
         try {
             this.reactorEffectRawData = IOUtils.toByteArray(GameManager.class
-                    .getResourceAsStream("sounds/" + REACTION_SOUND));
+                    .getResourceAsStream("/sounds/" + REACTION_SOUND));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -256,7 +257,7 @@ public class GameManager implements Runnable, GameState {
     public void initialiseUI() {
 
         this.gameFrame = new JFrame(
-                "Chain Rxn v1.0.0b - Copyright \u00a9 Schmick Software 2012");
+                String.format("Chain Rxn v1.0.0b - Copyright \u00a9 Schmick Software %s", Calendar.getInstance().get(Calendar.YEAR)));
 
         intialiseScreens(this.gameFrame.getContentPane());
         // TODO: Log point for splash
@@ -626,20 +627,20 @@ class GameMessager extends JPanel {
         // display the splash screen before game starts
         if (!this.gameState.isGameStarted()) {
             // TODO: Check
-            return String.format("Welcome - Press S to start");
+            return String.format("Welcome - Press 's' to start");
         } else if (this.gameState.isAdvancing()) {
             if (!this.gameState.isGameFinished()) {
                 return String
-                        .format("Current Score: %d\n\n Press N to proceed to next level",
+                        .format("Current Score: %d\n\n Press 'n' to proceed to next level",
                                 this.gameState.getCurrentScore());
             } else {
                 return String
-                        .format("Game finished - your score was: %d - Press S to play again",
+                        .format("Game finished - your score was: %d - Press 's' to play again",
                                 this.gameState.getCurrentScore());
             }
         } else {
             return String
-                    .format("Failed to complete level - Press A to try again");
+                    .format("Failed to complete level - Press a to try again");
         }
     }
 
