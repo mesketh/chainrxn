@@ -12,9 +12,7 @@ import java.awt.geom.Point2D;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -51,6 +49,7 @@ public class GameManager implements Runnable, GameState {
     private List<Reactor> reactorList;
 
     private Thread animatorThread;
+    private String version;
 
     private enum SplashScreenStages {
 
@@ -237,7 +236,7 @@ public class GameManager implements Runnable, GameState {
     public void initialiseUI() {
 
         this.gameFrame = new JFrame(
-                String.format("Chain Rxn (%s) - Copyright \u00a9 Schmick Software %s", System.getProperty("chainrxn.version"), Calendar.getInstance().get(Calendar.YEAR)));
+                String.format("Chain Rxn (%s) - Copyright \u00a9 Schmick Software %s", version, Calendar.getInstance().get(Calendar.YEAR)));
 
         initialiseScreens(this.gameFrame.getContentPane());
         // TODO: Log point for splash
@@ -502,6 +501,14 @@ public class GameManager implements Runnable, GameState {
     }
 
     private void init() {
+
+        // load version of app
+        Properties props = new Properties();
+        try {
+            props.load(GameManager.class.getResourceAsStream("/VERSION"));
+            this.version = props.getProperty("chainrxn.version");
+        } catch (IOException e) {
+        }
 
         updateProgress(SplashScreenStages.INIT_EFFECTS_START);
         initaliseEffects();
