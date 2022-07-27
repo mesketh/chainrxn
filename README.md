@@ -21,7 +21,7 @@ Option 2 (simpler):
 
 ##### Screenshots
 
-![Splash screen](https://github.com/mesketh/chainrxn/blob/master/src/main/resources/images/splash.png)
+![Splash screen](src/main/resources/images/splash.png)
 
 #### Known Bugs
 
